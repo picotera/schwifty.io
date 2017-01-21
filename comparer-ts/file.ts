@@ -31,11 +31,17 @@ class TickPlayer {
 }
 
 function main(): void {
+    let instrumentStream = new InstrumentStream();
+
     let firstDate = Date.now();
     var tickPlayer = new TickPlayer([400, 800, 1500, 1600, 2300, 4200], number => {
-        let currentDate = Date.now();
-        console.log(number, currentDate - firstDate);
+        instrumentStream.notifyTick();
+        console.log(Date.now() - firstDate);
     });
+
+    var comparer: StreamComparer = new StreamComparer([500, 900, 1600, 1800, 2200, 4200, 5000], 200, instrumentStream);
+
+    comparer.onPlayerMiss = () => console.log("Player missed");
 
     tickPlayer.play();
 }
